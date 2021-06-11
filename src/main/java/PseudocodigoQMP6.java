@@ -13,7 +13,7 @@ public class Sugerencia {
   public List<atuendo> atuendos;
 }
 //2
-public class AsesorDeImagen implements GeneradorSugerencias {
+public class AsesorDeImagen implements GeneradorSugerencias { //podria ser singleton ?
   private Sugerencia listaAtuendos;
   RepositorioUsuarios repoUsuarios;
 
@@ -52,7 +52,7 @@ enum AlertaMeteorologica {
 }
 
 public class RepositorioAlertas {
-  List<AlertaMeteorologica> ultimasAlertas = new ArrayList<>();
+  List<AlertaMeteorologica> ultimasAlertas;
 
   public void actualizarAlertas() {
     this.ultimasAlertas = new ServicioMeteorologicoAccuWeather().getAlertasMeteorologicas();
@@ -108,11 +108,11 @@ class ServicioMeteorologicoAccuWeather implements ServicioMeteorologico {
   }
 
 }
+//el repoAlertas se encarga de actualizarlas
 
-
-//5
+//5 y demas
 public class RepositorioAlertas {
-  List<AlertaMeteorologica> ultimasAlertas = new ArrayList<>();
+  List<AlertaMeteorologica> ultimasAlertas;
   RepositorioUsuarios repoUsuarios;
 
   public void actualizarAlertas() {
@@ -127,7 +127,7 @@ public class RepositorioAlertas {
 
 public class Usuario {
   Sugerencia sugerenciaDiaria;
-  List<Accion> acciones = new ArrayList<>();
+  List<Accion> acciones;
   String email;
 
   Sugerencia getSugerenciaDiaria(){
@@ -143,17 +143,16 @@ public class Usuario {
   }
 
   public void ejecutarAccionesAlertas(List<AlertaMeteorologica> alertas){
-    //El type test lo podemos resolver con las estrategias que ya conocemos
     if(alertas.contains(AlertaMeteorologica.TORMENTA)){
       acciones.forEach(accion -> accion.alertaTormenta(this));
     }else if(alertas.contains(AlertaMeteorologica.GRANIZO)) {
       acciones.forEach(accion -> accion.alertaGranizo(this));
-    }
+    }//se que hay un code smell pero no tengo muy claro como solventarlo
   }
 
   public String getEmail(){
     return email;
-  }
+  } //para la notif por mail
 }
 
 public interface Accion {
@@ -161,7 +160,7 @@ public interface Accion {
   public void alertaGranizo(Usuario usuario);
 }
 
-class NotificadorAlertas implements Accion {
+class NotificadorApp implements Accion {
   @Override
   public void alertaTormenta(Usuario usuario) {
     new Notificador().notificar(AlertaMeteorologica.TORMENTA.getMensaje());
